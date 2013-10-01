@@ -64,8 +64,15 @@ end
 @vowel_phonemes = flatten_weighted_hash @vowel_phonemes_with_weighting
 @allowed_lengths = flatten_weighted_hash @allowed_lengths_with_weighting
 
-puts "How many words?"
-@how_many = gets.to_i
+# check for command line args
+if $*.empty? then
+  puts "How many words?"
+  @how_many = gets.to_i
+else
+  @how_many = $*[0].to_i
+end
+
+
 puts "**** Fantasy words ****"
 @how_many.times do
 
