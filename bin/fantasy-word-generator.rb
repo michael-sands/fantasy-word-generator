@@ -1,5 +1,16 @@
+# state variables
 @next_is_vowel = false
 @last_was_vowel = false
+
+def usage extra_info
+  puts "Usage:"
+  puts "> ruby fantasy-word-generator.rb <how many words>"
+  # replace above with below when file input is supported...
+  #puts "ruby fantasy-word-generator.rb <how many words> <input file>"
+  if extra_info then
+    puts("  * " + extra_info)
+  end
+end
 
 def add_next_phoneme(list)
   list[rand(list.size)]
@@ -34,29 +45,26 @@ def flatten_weighted_hash input_hash
   return result
 end
 
-@consonant_phonemes_with_weighting = {
-  'b' => 1, 'k' => 1, 'd' => 1, 'f' => 1, 'g' => 1, 'h' => 1, 'j' => 1, 'l' => 1, 'm' => 1,
-  'n' => 1, 'p' => 1, 'kw' => 1, 'r' => 1, 's' => 1, 't' => 1, 'th' => 1,
-  'dh' => 1, 'v' => 1, 'w' => 1, 'ks' => 1, 'y' => 1, 'z' => 1, 'sh' => 1, 'wh' => 1, 
-  'ch' => 1, 'ng' => 1, 'zh' => 1
-}
-
-@vowel_phonemes_with_weighting = {
-  'a' => 1, 'ay' => 1, 'ee' => 1, 'e' => 1, 'ai' => 1, 'i' => 1, 'oh' => 1, 'o' => 1, 
-  'oo' => 1, 'u' => 1, 'oi' => 1, 'ou' => 1, 'aw' => 1, 'ar' => 1, 'er' => 1
-}
-
-@allowed_lengths_with_weighting = { 
-  2 => 5, 3 => 4, 4 => 6, 5 => 4, 6 => 3, 7 => 2, 8 => 1, 9 => 1 
-}
-
 #
 # TO DO:
 # ✓ add weighting to each phoneme list, and at runtime create a phoneme list that has
 # one entry per phoneme weighting
-# - add file-input where input file consists of phoneme lists and allowed lengths
+# ✓ add file-input where input file consists of phoneme lists and allowed lengths
 # - add all the non-english phonemes I can find
 #
+
+# check for command line args
+@how_many = $*[0].to_i
+$*[0] = nil
+
+if $*[1].empty? then
+  @input_file = '../input/default.rb'
+  puts "Using default input file: '#{@input_file}'"
+else 
+  @input_file = "../input/#{$*[1]}"
+end
+
+require @input_file
 
 # convert weighted lists to simple list with entries equal to weight  
 
@@ -64,14 +72,16 @@ end
 @vowel_phonemes = flatten_weighted_hash @vowel_phonemes_with_weighting
 @allowed_lengths = flatten_weighted_hash @allowed_lengths_with_weighting
 
-# check for command line args
-if $*.empty? then
-  puts "How many words?"
-  @how_many = gets.to_i
-else
-  @how_many = $*[0].to_i
+
+if @how_many < 1 then
+  puts "How many words would you like?"
+  @how_many = $stdin.gets.to_i
 end
 
+if @how_many < 1 then
+  usage "You must ask for at least one word! I'll assume that's what you meant."
+  @how_many = 1
+end
 
 puts "**** Fantasy words ****"
 @how_many.times do
