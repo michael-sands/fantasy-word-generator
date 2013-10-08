@@ -4,9 +4,7 @@
 
 def usage extra_info
   puts "Usage:"
-  puts "> ruby fantasy-word-generator.rb <how many words>"
-  # replace above with below when file input is supported...
-  #puts "ruby fantasy-word-generator.rb <how many words> <input file>"
+  puts "ruby fantasy-word-generator.rb <how many words> <input file>"
   if extra_info then
     puts("  * " + extra_info)
   end
@@ -14,25 +12,6 @@ end
 
 def add_next_phoneme(list)
   list[rand(list.size)]
-end
-
-def decide_what_is_next index
-  if @use_length == 2 and index == 1 and !@last_was_vowel then
-    @next_is_vowel = true
-  elsif @last_was_vowel and @next_is_vowel then
-    @next_is_vowel = false
-  elsif !@last_was_vowel and !@next_is_vowel then
-    if (index == (@use_length - 1)) then
-      @use_length += 1
-    end
-    @next_is_vowel = true
-  elsif rand(9) > 4.5 then
-    @last_was_vowel = @next_is_vowel
-    @next_is_vowel = true
-  else 
-    @last_was_vowel = @next_is_vowel
-    @next_is_vowel = false
-  end
 end
 
 def flatten_weighted_hash input_hash
@@ -57,7 +36,7 @@ end
 @how_many = $*[0].to_i
 $*[0] = nil
 
-if $*[1].empty? then
+if $*[1] == nil or $*[1].empty? then
   @input_file = '../input/default.rb'
   puts "Using default input file: '#{@input_file}'"
 else 
@@ -83,17 +62,15 @@ if @how_many < 1 then
   @how_many = 1
 end
 
-puts "**** Fantasy words ****"
+puts "**** Fantasy words from input file '#{@input_file}' ****"
 @how_many.times do
 
   @use_length = @allowed_lengths[rand(@allowed_lengths.size)]
 
   @name = ''
 
-  @use_length.times do |n|
-    decide_what_is_next n
-    
-    @name += add_next_phoneme(@next_is_vowel ? @vowel_phonemes : @consonant_phonemes)    
+  @use_length.each_char do |n|
+    @name += add_next_phoneme(n == 'v' ? @vowel_phonemes : @consonant_phonemes)    
   end
 
   @name[0] = @name[0].upcase

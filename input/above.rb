@@ -11,5 +11,13 @@
 }
 
 @allowed_lengths_with_weighting = { 
-  2 => 5, 3 => 6, 4 => 6, 5 => 4, 6 => 2, 7 => 1, 8 => 1, 9 => 1 
+  'v' => 1, 
+  'cv' => 5, 'vc' => 5, 'cvc' => 7, 
+  'ccv' => 6, 'cvv' => 3, 
+  'cvcv' => 6, 
+  'cvcvc' => 4, 
+  'cvcvcv' => 3, 
+  'cvcvcvc' => 2, 
+  'cvcvcvcv' => 1, 
+  'cvcvcvcvc' => 1 
 }
